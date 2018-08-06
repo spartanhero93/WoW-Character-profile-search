@@ -3,6 +3,9 @@ import axios from 'axios'
 import styled from 'styled-components'
 import Select from 'react-select'
 import logo from './logo.svg'
+import UserProfile from './components/UserProfile'
+import NoImg from './images/noImage.jpg'
+
 import './App.css'
 
 const options = [
@@ -17,7 +20,10 @@ class App extends Component {
     user: {},
     userId: '',
     userPic: '',
-    selectedOption: null
+    selectedOption: {
+      value: 'avatar',
+      label: 'Thumbnail'
+    }
   }
 
   handleInput = event => {
@@ -33,23 +39,27 @@ class App extends Component {
         characterName: this.state.term
       })
       const user = await response.data
+      const thumbnail = await user.data.thumbnail
+      const newChoice = await thumbnail.replace(
+        /avatar/i,
+        this.state.selectedOption.value
+      )
 
       this.setState({
         user: user.data,
-        userPic: `http://render-us.worldofwarcraft.com/character/${user.data.thumbnail}`
+        userPic: `http://render-us.worldofwarcraft.com/character/${newChoice}`
       })
-      console.log(user)
     } catch (error) {
-      console.log(error)
+      this.setState({ user: undefined, userPic: NoImg })
     }
   }
 
   handleImageSelect = selectedOption => {
     this.setState({ selectedOption })
-    console.log(`Option selected:`, selectedOption)
   }
 
   render () {
+    console.log(this.state.user)
     const { selectedOption } = this.state
     return (
       <div className='App'>
@@ -60,29 +70,35 @@ class App extends Component {
         <p className='App-intro'>
           {this.state.term}
         </p>
-        <input
-          name='characterName'
-          value={this.state.term}
-          onChange={this.handleInput}
-        />
-        <Select
-          value={selectedOption}
-          onChange={this.handleImageSelect}
-          options={options}
-        />
+        <SearchInputs>
+          <input
+            name='characterName'
+            value={this.state.term}
+            onChange={this.handleInput}
+          />
+          <Select
+            defaultValue='avatar'
+            value={selectedOption}
+            onChange={this.handleImageSelect}
+            options={options}
+          />
+        </SearchInputs>
+
         <button onClick={this.handleSearch}>Test Server</button>
 
-        <User>
-          <h3>UserName: {this.state.user.name}</h3>
-          <img src={this.state.userPic} alt='user pic' />
-        </User>
+        <UserProfile user={this.state.user} userPic={this.state.userPic} />
       </div>
     )
   }
 }
 
-const User = styled.div`
-  margin: 2rem 8rem;
+const SearchInputs = styled.div`
+  display: flex;
+  justify-content: center;
+
+  & > * {
+    width: 20%;
+  }
 `
 
 export default App
