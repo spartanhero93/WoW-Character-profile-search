@@ -1,8 +1,15 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import styled from 'styled-components'
+import Select from 'react-select'
 import logo from './logo.svg'
 import './App.css'
+
+const options = [
+  { value: 'avatar', label: 'Thumbnail' },
+  { value: 'main', label: 'Full' },
+  { value: 'inset', label: 'Half' }
+]
 
 class App extends Component {
   state = {
@@ -10,7 +17,7 @@ class App extends Component {
     user: {},
     userId: '',
     userPic: '',
-    picType: ''
+    selectedOption: null
   }
 
   handleInput = event => {
@@ -37,7 +44,13 @@ class App extends Component {
     }
   }
 
+  handleImageSelect = selectedOption => {
+    this.setState({ selectedOption })
+    console.log(`Option selected:`, selectedOption)
+  }
+
   render () {
+    const { selectedOption } = this.state
     return (
       <div className='App'>
         <header className='App-header'>
@@ -52,11 +65,11 @@ class App extends Component {
           value={this.state.term}
           onChange={this.handleInput}
         />
-        <select>
-          <option value='avatar'>Thumbnail</option>
-          <option value='main'>Full</option>
-          <option value='inset'>Top</option>
-        </select>
+        <Select
+          value={selectedOption}
+          onChange={this.handleImageSelect}
+          options={options}
+        />
         <button onClick={this.handleSearch}>Test Server</button>
 
         <User>
