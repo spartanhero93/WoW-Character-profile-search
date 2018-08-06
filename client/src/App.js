@@ -7,7 +7,10 @@ import './App.css'
 class App extends Component {
   state = {
     term: '',
-    data: {}
+    user: {},
+    userId: '',
+    userPic: '',
+    picType: ''
   }
 
   handleInput = event => {
@@ -22,8 +25,13 @@ class App extends Component {
       const response = await axios.post('/api/getData', {
         characterName: this.state.term
       })
-      const data = await response.data
-      console.log(data)
+      const user = await response.data
+
+      this.setState({
+        user: user.data,
+        userPic: `http://render-us.worldofwarcraft.com/character/${user.data.thumbnail}`
+      })
+      console.log(user)
     } catch (error) {
       console.log(error)
     }
@@ -44,10 +52,24 @@ class App extends Component {
           value={this.state.term}
           onChange={this.handleInput}
         />
+        <select>
+          <option value='avatar'>Thumbnail</option>
+          <option value='main'>Full</option>
+          <option value='inset'>Top</option>
+        </select>
         <button onClick={this.handleSearch}>Test Server</button>
+
+        <User>
+          <h3>UserName: {this.state.user.name}</h3>
+          <img src={this.state.userPic} alt='user pic' />
+        </User>
       </div>
     )
   }
 }
+
+const User = styled.div`
+  margin: 2rem 8rem;
+`
 
 export default App
