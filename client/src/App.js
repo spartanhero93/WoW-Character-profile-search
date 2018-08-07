@@ -2,11 +2,9 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import styled from 'styled-components'
 import Select from 'react-select'
-import logo from './logo.svg'
+import Navbar from './components/Navbar'
 import UserProfile from './components/UserProfile'
 import NoImg from './images/noImage.jpg'
-
-import './App.css'
 
 const options = [
   { value: 'avatar', label: 'Thumbnail' },
@@ -16,7 +14,7 @@ const options = [
 
 class App extends Component {
   state = {
-    term: '',
+    term: 'axiosjs',
     user: {},
     userId: '',
     userPic: '',
@@ -24,6 +22,10 @@ class App extends Component {
       value: 'avatar',
       label: 'Thumbnail'
     }
+  }
+
+  componentDidMount () {
+    this.handleSearch()
   }
 
   handleInput = event => {
@@ -62,14 +64,9 @@ class App extends Component {
     console.log(this.state.user)
     const { selectedOption } = this.state
     return (
-      <div className='App'>
-        <header className='App-header'>
-          <img src={logo} className='App-logo' alt='logo' />
-          <h1 className='App-title'>Welcome to React</h1>
-        </header>
-        <p className='App-intro'>
-          {this.state.term}
-        </p>
+      <Wrapper>
+
+        <Navbar />
         <SearchInputs>
           <input
             name='characterName'
@@ -87,18 +84,22 @@ class App extends Component {
         <button onClick={this.handleSearch}>Test Server</button>
 
         <UserProfile user={this.state.user} userPic={this.state.userPic} />
-      </div>
+      </Wrapper>
     )
   }
 }
 
+const Wrapper = styled.div`
+  text-align: center;
+`
+
 const SearchInputs = styled.div`
   display: flex;
   justify-content: center;
-
   & > * {
-    width: 20%;
+    width: 40%;
   }
+
 `
 
 export default App
